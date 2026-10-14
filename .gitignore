@@ -43,3 +43,7 @@ build-*/
 # Python caches
 __pycache__/
 *.pyc
+
+# The DOOM II bank and its fitting tools live in a private workspace (linked in
+# there); nothing fitted to DOOM's sounds is part of DigidreamSound.
+/content/game

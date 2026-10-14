@@ -171,13 +171,11 @@ hear the same thing. That is a property worth not giving up by accident.
 
 ## Content
 
-`content/game/doom2.sfxproj` is the engine-side set: ~100 roles named after the
-engine's own identifiers (`imp`, `supershotgun`, `world.door.open`), so a
-mapping from mob and weapon names is mechanical. It is deliberately **not** part
-of the standalone product — `scripts/make_standalone.sh` excludes
-`content/game/` — and `content/banks/starter.sfxproj` is the generic set that
-ships with the editor instead.
+`content/banks/starter.sfxproj` is the generic set that ships with the editor.
+A game's own set lives with the game (a module's `sources/sounds/`), not here:
+the engine names its sounds by its own identifiers (`world.door.open`), so a
+mapping from mob and weapon names to a bank's roles is mechanical.
 
-Bake before shipping: `dsound_bake content/game/doom2.sfxproj doom2.sfxb`. The
-result is ~85 KB for a hundred sounds, because a bank carries recipes rather
-than recordings.
+Bake before shipping: `dsound_bake <bank>.sfxproj <bank>.sfxb`. A hundred
+sounds come to roughly 85 KB, because a bank carries recipes rather than
+recordings.

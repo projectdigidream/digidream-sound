@@ -17,7 +17,7 @@ import { existsSync, readFileSync } from 'node:fs'
 
 const banks = process.argv.length > 2
   ? process.argv.slice(2)
-  : ['content/banks/starter.sfxproj', 'content/game/doom2.sfxproj']
+  : ['content/banks/starter.sfxproj', 'content/game/doom2.sfxproj'].filter((b) => existsSync(b) || (console.log(`skip: ${b} missing (a private bank)`), false))
 
 let failures = 0
 let checks = 0

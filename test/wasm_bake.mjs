@@ -22,7 +22,7 @@ import { join } from 'node:path'
 const banks = process.argv.length > 2
   ? process.argv.slice(2)
   : ['test/golden/identity.sfxproj', 'content/banks/starter.sfxproj',
-     'content/game/doom2.sfxproj']
+     'content/game/doom2.sfxproj'].filter((b) => existsSync(b) || (console.log(`skip: ${b} missing (a private bank)`), false))
 
 let failures = 0
 let checks = 0

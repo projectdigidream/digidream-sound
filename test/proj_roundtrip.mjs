@@ -35,7 +35,8 @@ const check = (cond, what) => {
   if (cond) { console.log('ok', what); } else { console.error('FAIL', what); failures++; }
 };
 
-const BANKS = ['content/banks/starter.sfxproj', 'content/game/doom2.sfxproj'];
+// content/game/ is a private bank, linked in where it is installed.
+const BANKS = ['content/banks/starter.sfxproj', 'content/game/doom2.sfxproj'].filter((b) => existsSync(b) || (console.log(`skip: ${b} missing (a private bank)`), false));
 const sha = (b) => createHash('sha256').update(b).digest('hex');
 
 // --- 1-3: the model round-trips -------------------------------------------
