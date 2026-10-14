@@ -5,6 +5,7 @@
 #   ./scripts/package_electron.sh                installers for this platform
 #   ./scripts/package_electron.sh --dir          an unpacked app, faster
 #   ./scripts/package_electron.sh --stage-only   just the payload
+#   ./scripts/package_electron.sh --all          macOS (arm64 + x64), Windows x64 and Linux x64
 #   ./scripts/package_electron.sh --linux        cross-build for Linux
 #
 # This stages the EXACT payload scripts/package_web.sh produces, so the browser
@@ -34,6 +35,11 @@ fi
 case "$MODE" in
   --dir)   npx electron-builder --dir ;;
   --linux) npx electron-builder --linux ;;
+  --mac)   npx electron-builder --mac ;;
+  # Windows from any machine: the .exe is not edited (signAndEditExecutable
+  # false), which is the step that would need Wine.
+  --win)   npx electron-builder --win ;;
+  --all)   npx electron-builder --mac --win --linux ;;
   *)       npx electron-builder ;;
 esac
 echo "package_electron: see electron/dist/"

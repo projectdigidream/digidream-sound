@@ -5,19 +5,95 @@
   "description": "A sound-effect engine and its editor",
   "license": "MIT",
   "main": "main.js",
-  "scripts": { "start": "electron ." },
+  "scripts": {
+    "start": "electron ."
+  },
   "build": {
     "appId": "com.digidreamsound.sfx",
     "productName": "DigidreamSound",
-    "files": ["main.js", "preload.js", "payload/**/*"],
-    "directories": { "output": "dist" },
-    "mac": { "category": "public.app-category.music", "target": ["dmg", "zip"] },
-    "win": { "target": ["nsis", "zip"] },
-    "linux": { "target": ["AppImage", "tar.gz"], "category": "AudioVideo" },
+    "files": [
+      "main.js",
+      "preload.js",
+      "payload/**/*"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "mac": {
+      "category": "public.app-category.music",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "identity": null
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "signAndEditExecutable": false
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "tar.gz",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "category": "AudioVideo"
+    },
     "fileAssociations": [
-      { "ext": "sfxproj", "name": "DigidreamSound project", "role": "Editor" },
-      { "ext": "sfxb", "name": "DigidreamSound bank", "role": "Viewer" }
-    ]
+      {
+        "ext": "sfxproj",
+        "name": "DigidreamSound project",
+        "role": "Editor"
+      },
+      {
+        "ext": "sfxb",
+        "name": "DigidreamSound bank",
+        "role": "Viewer"
+      }
+    ],
+    "afterPack": "./adhoc-sign.js"
   },
-  "devDependencies": { "electron": "^31.0.0", "electron-builder": "^24.13.3" }
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "author": {
+    "name": "Project Digidream",
+    "email": "342386719+projectdigidream@users.noreply.github.com"
+  },
+  "homepage": "https://github.com/projectdigidream/digidream-sound"
 }
