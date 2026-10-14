@@ -1,5 +1,6 @@
 {
   "name": "digidreamsound-mobile",
+  "license": "MIT",
   "private": true,
   "devDependencies": {
     "@capacitor/cli": "^6.0.0",
