@@ -42,7 +42,7 @@ mkdir -p "$OUT"
 
 # ---- our own tree ---------------------------------------------------------
 cp -R src test scripts docs tool android "$OUT/"
-cp CMakeLists.txt dsp_manifest.txt README.md LICENSE .gitignore "$OUT/" 2>/dev/null || true
+cp CMakeLists.txt dsp_manifest.txt README.md DEVELOPING.md LICENSE .gitignore "$OUT/" 2>/dev/null || true
 mkdir -p "$OUT/content/banks"
 cp content/banks/*.sfxproj "$OUT/content/banks/"
 
