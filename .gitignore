@@ -40,3 +40,6 @@ certs/
 *.wav
 # CMake build folders
 build-*/
+# Python caches
+__pycache__/
+*.pyc
