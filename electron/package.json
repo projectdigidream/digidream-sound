@@ -1,7 +1,7 @@
 {
   "name": "digidreamsound",
   "productName": "DigidreamSound",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "description": "A sound-effect engine and its editor",
   "license": "MIT",
   "main": "main.js",

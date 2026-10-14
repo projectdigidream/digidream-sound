@@ -82,7 +82,7 @@ cp "$RES/drawable/ic_fg.xml" "$RES/mipmap/ic_launcher.xml"
 "$BT/aapt2" compile --dir "$RES" -o "$OUT/res.zip" >/dev/null
 "$BT/aapt2" link -I "$PLATFORM_JAR" --manifest android/AndroidManifest.xml \
   --java "$OUT/gen" --min-sdk-version 26 --target-sdk-version 34 \
-  --version-code "$(date +%s | cut -c1-9)" --version-name "0.1" \
+  --version-code "$(date +%s | cut -c1-9)" --version-name "$(cat VERSION)" \
   -o "$OUT/base.apk" "$OUT/res.zip" >/dev/null
 
 # --- 3. java -----------------------------------------------------------------
