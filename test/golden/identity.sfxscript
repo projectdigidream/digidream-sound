@@ -1,0 +1,10 @@
+{
+  "version": 1, "seconds": 2,
+  "listener": [ { "atSample": 0, "pos": [0, 0, 1.2], "yawDeg": 0 } ],
+  "events": [
+    { "atSample": 0,     "sound": "noise_hit",    "seed": 111, "pos": [2, 1, 0] },
+    { "atSample": 16000, "sound": "tone_gesture", "seed": 222 },
+    { "atSample": 40000, "sound": "layered",      "seed": 333, "pos": [-5, 4, 0] },
+    { "atSample": 64000, "sound": "noise_hit",    "seed": 444, "pos": [9, -2, 0] }
+  ]
+}

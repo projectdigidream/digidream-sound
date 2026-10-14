@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The DigidreamSound editor on Android.
+
+  NO PERMISSIONS AT ALL. The editor is a page served out of the APK's own
+  assets (MainActivity.serve) and it opens no socket, so unlike the game's shell
+  it does not even need INTERNET. Files move through the Storage Access
+  Framework, where the user picks each one, which needs no permission either.
+
+  Any orientation: the tool lays itself out for a phone held either way
+  (docs/SOUND.md, Mobile). configChanges keeps a rotation from recreating the
+  activity, which would reload the page and lose an unsaved bank.
+
+  (No double hyphens in this comment: XML forbids them, and aapt2 reports it
+  against the line the comment starts on.)
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.digidreamsound.sfx">
+
+  <supports-screens android:largeScreens="true" android:xlargeScreens="true" />
+
+  <application
+      android:label="DigidreamSound"
+      android:icon="@mipmap/ic_launcher"
+      android:hardwareAccelerated="true"
+      android:allowBackup="false"
+      android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
+
+    <activity
+        android:name="com.digidreamsound.sfx.MainActivity"
+        android:exported="true"
+        android:launchMode="singleTask"
+        android:windowSoftInputMode="adjustResize"
+        android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden|keyboard|uiMode|density">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
+  </application>
+</manifest>

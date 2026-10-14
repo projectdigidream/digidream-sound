@@ -1,0 +1,8 @@
+# Written by scripts/sync_lib.sh. sha256 of each module copied from
+# midisynth/tool/lib. scripts/check_lib_sync.sh verifies the local copies
+# against THIS, not against midisynth -- so the check works offline and in
+# an extracted tree, and a deliberate update is a visible diff here.
+#
+# Synced from: ../midisynth/tool/lib
+528bb534d4a3804294b28a3d51cf4fdf71a2c1a357fe539dbafc3c04e7ee7967  ui.js
+cd30b9cba599c589d2afc7b9f376c9e5b5faedd29b7d2de4af4a1e9665b207ed  desktop.js

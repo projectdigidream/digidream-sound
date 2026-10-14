@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "name": "identity",
+  "_why": "No pitch jitter anywhere. With jitter, a cached sound is resampled and a live one is re-synthesized: both deterministic, deliberately not the same signal. Without it, the two paths must agree byte for byte, and that is what this bank exists to prove.",
+  "buses": [
+    { "name": "world", "maxInstances": 16, "spatial": true },
+    { "name": "flat",  "maxInstances": 8,  "spatial": false }
+  ],
+  "sounds": [
+    { "name": "noise_hit", "bus": "world", "priority": 200,
+      "variants": [{ "patch": { "oneShot": true, "layers": [
+        { "osc": "noise", "noiseColor": "pink",
+          "ampEnv": { "attack": 0, "decay": 120, "sustain": 0, "release": 5 },
+          "filter": { "mode": "lowpass", "cutoffHz": 3000, "resonance": 0.4 },
+          "filterEnv": { "attack": 0, "decay": 80, "sustain": 0, "depth": 0.6 } } ] } }] },
+
+    { "name": "tone_gesture", "bus": "flat", "priority": 150,
+      "variants": [{ "patch": { "oneShot": true, "layers": [
+        { "osc": "wavetable",
+          "wavetable": { "generator": "fm2op", "frameCount": 8,
+                         "params": { "ratio": 7, "startIndex": 5, "endIndex": 0.5 } },
+          "ampEnv":   { "attack": 1, "decay": 300, "sustain": 0, "release": 10 },
+          "wtPosEnv": { "attack": 0, "decay": 250, "sustain": 0, "depth": 1.0 } } ] },
+        "gesture": [ { "atMs": 0, "note": 60, "vel": 110 },
+                     { "atMs": 90, "note": 67, "vel": 90 } ] }] },
+
+    { "name": "layered", "bus": "world", "priority": 100,
+      "variants": [{ "patch": { "oneShot": true, "layers": [
+        { "osc": "noise", "noiseColor": "brown", "mixGain": 0.8,
+          "ampEnv": { "attack": 0, "decay": 200, "sustain": 0, "release": 5 },
+          "filter": { "mode": "lowpass", "cutoffHz": 800, "resonance": 0.3 } },
+        { "osc": "wavetable", "mixGain": 0.6, "startDelayMs": 15, "pitchNote": 40,
+          "wavetable": { "generator": "waveshaper", "frameCount": 8,
+                         "params": { "shape": "fold", "input": "sine",
+                                     "startDrive": 5, "endDrive": 1 } },
+          "ampEnv":   { "attack": 0, "decay": 160, "sustain": 0, "release": 5 },
+          "wtPosEnv": { "attack": 0, "decay": 120, "sustain": 0, "depth": 1.0 } } ] } }] }
+  ]
+}

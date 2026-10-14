@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "name": "contest",
+  "_why": "A deliberately tight bus, two priorities, no cooldown and no jitter. The point is to make tier (b) -- the bus budget, the steal ranking and the priority refusal -- decide every trigger, which the flood case does not: there the per-sound caps bind first. No jitter, so cached and live must still agree exactly even while instances are being stolen.",
+  "buses": [ { "name": "tight", "spatial": false, "maxInstances": 3 } ],
+  "sounds": [
+    { "name": "low", "bus": "tight", "priority": 20, "maxInstances": 8, "gainDb": -6,
+      "variants": [{ "patch": { "oneShot": true, "layers": [
+        { "osc": "noise", "noiseColor": "pink",
+          "ampEnv": { "attack": 0, "decay": 600, "sustain": 0, "release": 5 },
+          "filter": { "mode": "lowpass", "cutoffHz": 2000, "resonance": 0.3 } } ] } }] },
+
+    { "name": "high", "bus": "tight", "priority": 200, "maxInstances": 8, "gainDb": -6,
+      "variants": [{ "patch": { "oneShot": true, "layers": [
+        { "osc": "noise", "noiseColor": "brown",
+          "ampEnv": { "attack": 0, "decay": 700, "sustain": 0, "release": 5 },
+          "filter": { "mode": "lowpass", "cutoffHz": 900, "resonance": 0.4 } } ] } }] }
+  ]
+}

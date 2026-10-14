@@ -1,0 +1,252 @@
+{
+  "version": 1,
+  "name": "starter",
+
+  "buses": [
+    { "name": "world",  "gainDb": 0,  "maxInstances": 20, "spatial": true,  "sendReverb": 0.18 },
+    { "name": "player", "gainDb": 0,  "maxInstances": 6,  "spatial": false },
+    { "name": "ui",     "gainDb": -3, "maxInstances": 4,  "spatial": false }
+  ],
+
+  "fx": {
+    "reverb": { "roomSize": 0.5, "damping": 0.6, "width": 1.0, "wetGain": 0.15,
+                "preDelayMs": 10, "highPassHz": 250 }
+  },
+
+  "sounds": [
+    {
+      "name": "weapon.pistol.fire",
+      "bus": "player",
+      "gainDb": -3,
+      "priority": 200,
+      "maxInstances": 3,
+      "cooldownMs": 50,
+      "pitchJitterCents": 30,
+      "gainJitterDb": 1.0,
+      "tags": ["weapon"],
+      "variants": [{
+        "patch": {
+          "name": "pistol",
+          "oneShot": true,
+          "layers": [
+            {
+              "osc": "noise", "noiseColor": "white", "mixGain": 0.9,
+              "ampEnv":    { "attack": 0, "decay": 55, "sustain": 0, "release": 5 },
+              "filter":    { "mode": "bandpass", "cutoffHz": 2200, "resonance": 0.35 },
+              "filterEnv": { "attack": 0, "decay": 40, "sustain": 0, "depth": 0.7 }
+            },
+            {
+              "osc": "wavetable", "mixGain": 0.7,
+              "wavetable": { "generator": "fm2op", "frameCount": 8,
+                             "params": { "ratio": 3, "startIndex": 6, "endIndex": 0.5 } },
+              "pitchNote": 45,
+              "ampEnv":   { "attack": 0, "decay": 70, "sustain": 0, "release": 5 },
+              "pitchEnv": { "attack": 0, "decay": 30, "sustain": 0, "depthSemis": -18 },
+              "wtPosEnv": { "attack": 0, "decay": 50, "sustain": 0, "depth": 1.0 },
+              "filter":   { "mode": "lowpass", "cutoffHz": 3000, "resonance": 0.2 }
+            }
+          ]
+        }
+      }]
+    },
+
+    {
+      "name": "weapon.shotgun.fire",
+      "bus": "player",
+      "gainDb": -2,
+      "priority": 210,
+      "maxInstances": 2,
+      "cooldownMs": 90,
+      "pitchJitterCents": 25,
+      "gainJitterDb": 1.0,
+      "tags": ["weapon"],
+      "variants": [{
+        "patch": {
+          "name": "shotgun",
+          "oneShot": true,
+          "layers": [
+            {
+              "osc": "noise", "noiseColor": "white", "mixGain": 1.0,
+              "ampEnv": { "attack": 0, "decay": 30, "sustain": 0, "release": 5 },
+              "filter": { "mode": "highpass", "cutoffHz": 1800, "resonance": 0.2 }
+            },
+            {
+              "osc": "noise", "noiseColor": "brown", "mixGain": 1.0,
+              "ampEnv":    { "attack": 0, "decay": 220, "sustain": 0, "release": 10 },
+              "filter":    { "mode": "lowpass", "cutoffHz": 900, "resonance": 0.3 },
+              "filterEnv": { "attack": 0, "decay": 150, "sustain": 0, "depth": 0.5 }
+            },
+            {
+              "osc": "wavetable", "mixGain": 0.5,
+              "wavetable": { "generator": "waveshaper", "frameCount": 8,
+                             "params": { "shape": "fold", "input": "triangle",
+                                         "startDrive": 6, "endDrive": 1, "bias": 0.3 } },
+              "pitchNote": 33,
+              "ampEnv":   { "attack": 0, "decay": 120, "sustain": 0, "release": 5 },
+              "pitchEnv": { "attack": 0, "decay": 40, "sustain": 0, "depthSemis": -12 },
+              "wtPosEnv": { "attack": 0, "decay": 90, "sustain": 0, "depth": 1.0 }
+            }
+          ]
+        }
+      }]
+    },
+
+    {
+      "name": "impact.flesh",
+      "bus": "world",
+      "gainDb": -6,
+      "priority": 120,
+      "maxInstances": 4,
+      "cooldownMs": 25,
+      "pitchJitterCents": 120,
+      "gainJitterDb": 2.0,
+      "attenuation": { "minDist": 3, "maxDist": 40, "curve": "exp", "rearDb": -2 },
+      "tags": ["impact"],
+      "variants": [
+        {
+          "weight": 2,
+          "patch": {
+            "name": "flesh_a",
+            "oneShot": true,
+            "layers": [{
+              "osc": "noise", "noiseColor": "pink",
+              "ampEnv":    { "attack": 0, "decay": 90, "sustain": 0, "release": 5 },
+              "filter":    { "mode": "lowpass", "cutoffHz": 1400, "resonance": 0.5 },
+              "filterEnv": { "attack": 0, "decay": 60, "sustain": 0, "depth": 0.6 }
+            }]
+          }
+        },
+        {
+          "weight": 1,
+          "patch": {
+            "name": "flesh_b",
+            "oneShot": true,
+            "layers": [{
+              "osc": "noise", "noiseColor": "brown",
+              "ampEnv":    { "attack": 0, "decay": 130, "sustain": 0, "release": 5 },
+              "filter":    { "mode": "lowpass", "cutoffHz": 900, "resonance": 0.6 },
+              "filterEnv": { "attack": 0, "decay": 80, "sustain": 0, "depth": 0.5 }
+            }]
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "player.step.stone",
+      "bus": "world",
+      "gainDb": -14,
+      "priority": 40,
+      "maxInstances": 3,
+      "cooldownMs": 90,
+      "pitchJitterCents": 200,
+      "gainJitterDb": 2.5,
+      "attenuation": { "minDist": 2, "maxDist": 22, "curve": "exp" },
+      "tags": ["footstep"],
+      "variants": [{
+        "patch": {
+          "name": "step",
+          "oneShot": true,
+          "layers": [{
+            "osc": "noise", "noiseColor": "pink",
+            "ampEnv":    { "attack": 0, "decay": 45, "sustain": 0, "release": 3 },
+            "filter":    { "mode": "bandpass", "cutoffHz": 700, "resonance": 0.4 },
+            "filterEnv": { "attack": 0, "decay": 30, "sustain": 0, "depth": 0.4 }
+          }]
+        }
+      }]
+    },
+
+    {
+      "name": "world.door.open",
+      "bus": "world",
+      "gainDb": -5,
+      "priority": 150,
+      "maxInstances": 2,
+      "cooldownMs": 200,
+      "pitchJitterCents": 40,
+      "attenuation": { "minDist": 4, "maxDist": 45, "curve": "linear", "airLpfHz": 1200 },
+      "tags": ["mechanism"],
+      "variants": [{
+        "patch": {
+          "name": "door",
+          "oneShot": true,
+          "layers": [
+            {
+              "osc": "noise", "noiseColor": "brown", "mixGain": 1.0,
+              "ampEnv": { "attack": 0, "decay": 110, "sustain": 0, "release": 5 },
+              "filter": { "mode": "lowpass", "cutoffHz": 500, "resonance": 0.4 }
+            },
+            {
+              "osc": "wavetable", "mixGain": 0.35,
+              "wavetable": { "generator": "additiveHarmonicMorph", "frameCount": 8,
+                             "params": { "startHarmonics": 3, "endHarmonics": 24,
+                                         "falloff": "flat" } },
+              "ampEnv":   { "attack": 60, "decay": 700, "sustain": 0, "release": 40 },
+              "pitchEnv": { "attack": 500, "decay": 0, "sustain": 1, "depthSemis": 5 },
+              "wtPosEnv": { "attack": 400, "decay": 0, "sustain": 1, "depth": 1.0 },
+              "filter":   { "mode": "bandpass", "cutoffHz": 1100, "resonance": 0.7 }
+            }
+          ]
+        },
+        "gesture": [
+          { "atMs": 0,   "note": 36, "vel": 120 },
+          { "atMs": 140, "note": 55, "vel": 70 }
+        ]
+      }]
+    },
+
+    {
+      "name": "pickup.health",
+      "bus": "ui",
+      "gainDb": -8,
+      "priority": 180,
+      "maxInstances": 2,
+      "cooldownMs": 60,
+      "tags": ["pickup"],
+      "variants": [{
+        "patch": {
+          "name": "blip",
+          "oneShot": true,
+          "layers": [{
+            "osc": "wavetable",
+            "wavetable": { "generator": "additiveHarmonicMorph", "frameCount": 8,
+                           "params": { "startHarmonics": 6, "endHarmonics": 1,
+                                       "falloff": "square" } },
+            "ampEnv":   { "attack": 2, "decay": 130, "sustain": 0, "release": 10 },
+            "wtPosEnv": { "attack": 0, "decay": 110, "sustain": 0, "depth": 1.0 },
+            "filter":   { "mode": "lowpass", "cutoffHz": 6000, "resonance": 0.1 }
+          }]
+        },
+        "gesture": [
+          { "atMs": 0,  "note": 72, "vel": 100 },
+          { "atMs": 70, "note": 79, "vel": 110 }
+        ]
+      }]
+    },
+
+    {
+      "name": "ui.select",
+      "bus": "ui",
+      "gainDb": -12,
+      "priority": 250,
+      "maxInstances": 1,
+      "cooldownMs": 30,
+      "tags": ["ui"],
+      "variants": [{
+        "patch": {
+          "name": "click",
+          "oneShot": true,
+          "layers": [{
+            "osc": "wavetable",
+            "wavetable": { "generator": "additiveHarmonicMorph", "frameCount": 1,
+                           "params": { "startHarmonics": 4, "falloff": "square" } },
+            "pitchNote": 84,
+            "ampEnv": { "attack": 0, "decay": 35, "sustain": 0, "release": 3 },
+            "filter": { "mode": "lowpass", "cutoffHz": 8000, "resonance": 0.1 }
+          }]
+        }
+      }]
+    }
+  ]
+}

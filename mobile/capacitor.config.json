@@ -1,0 +1,8 @@
+{
+  "appId": "com.digidreamsound.sfx",
+  "appName": "DigidreamSound",
+  "webDir": "www",
+  "server": { "androidScheme": "https" },
+  "android": { "allowMixedContent": false },
+  "ios": { "contentInset": "always" }
+}

@@ -1,0 +1,11 @@
+{
+  "version": 1, "seconds": 3,
+  "listener": [ { "atSample": 0, "pos": [0, 0, 1.2], "yawDeg": 0 } ],
+  "events": [
+    { "atSample": 0,      "sound": "weapon.pistol.fire",  "seed": 12345 },
+    { "atSample": 24000,  "sound": "weapon.shotgun.fire", "seed": 22222 },
+    { "atSample": 60000,  "sound": "ui.select",           "seed": 3 },
+    { "atSample": 72000,  "sound": "pickup.health",       "seed": 4 },
+    { "atSample": 100000, "sound": "world.door.open",     "seed": 5, "pos": [6, 3, 0] }
+  ]
+}

@@ -1,0 +1,9 @@
+# name  sha256
+# Written by scripts/run_goldens.sh --regen. LISTEN to the review WAVs before
+# committing a change to these: a hash moving is not a decision until someone
+# has heard what moved.
+identity 7c000710ea632adf9be581e8259625f76e6f8b04575bba0ebd06c7b8667c4ed2
+starter b7cb878fabe1a71a5a104d127d9b18d757358ed885c92eb269d36ecf2338e382
+flood cbc2c8e60d80e01fa601805d5b69ded83d6abdf9df02be9853370c897deea617
+contest 97cad15bfd860ce8b4751a1db5ef456d58882f1679f99230255e10d6311b4b5f
+budget 7c000710ea632adf9be581e8259625f76e6f8b04575bba0ebd06c7b8667c4ed2

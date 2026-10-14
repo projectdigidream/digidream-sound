@@ -1,0 +1,138 @@
+# Which of midisynth's sources this project compiles, and why the rest are out.
+#
+# sound/ shares midisynth's DSP by compiling its .cpp files directly rather
+# than forking them. That is the only way two projects can be guaranteed to
+# make the same sound from the same patch -- and scripts/run_goldens.sh proves
+# it, by rendering one patch through both engines and comparing hashes.
+#
+# The risk of sharing by path is that midisynth grows a source we do not know
+# about, and we keep building against a DSP that has moved. This file is the
+# list that check_dsp_sources.sh holds midisynth to: every .cpp under
+# midisynth/src (outside src/output and src/bindings, which are its own CLIs
+# and its own embedding) must appear below, in COMPILED or in EXCLUDED with a
+# reason. A new one appears in neither, and the build stops.
+#
+# The same list must appear in CMakeLists.txt and in scripts/build_wasm.sh,
+# which is the other half of what the check enforces: native and wasm must
+# compile the same DSP or the determinism gate is comparing two different
+# programs.
+
+COMPILED
+src/synth/tables.cpp
+src/synth/wavetables.cpp
+src/synth/wavetable_gen_additive.cpp
+src/synth/wavetable_gen_extra.cpp
+src/synth/wavetable_cache.cpp
+src/synth/json_min.cpp
+src/synth/patch_loader.cpp
+src/synth/song_config.cpp
+src/synth/voice.cpp
+src/synth/master_chain.cpp
+src/synth/effects/reverb.cpp
+
+EXCLUDED
+src/synth/voice_pool.cpp      # the allocation policy is precisely what differs: SfxVoicePool ranks by instance priority and confines stealing to a bus
+src/synth/synth_engine.cpp    # 16 MIDI channels, programs, CC, crossfade banks -- SfxEngine replaces it
+src/midi/smf_parser.cpp       # no MIDI files here
+src/midi/smf_writer.cpp       # no MIDI files here
+src/midi/tempo_map.cpp        # no tempo: a sound effect has no bar line
+src/track/track.cpp           # .mstk is a music deliverable; .sfxb copies its framing, not its content
+src/sequencer/song.cpp        # no transport
+src/sequencer/sequencer.cpp   # no transport
+src/sequencer/music_director.cpp  # no cues, no crossfade
+
+# Headers used without their .cpp. Listed so that a header growing a source
+# file is noticed rather than silently unlinked.
+HEADERS_ONLY
+src/sequencer/event_queue.h   # a generic lock-free SPSC ring; nothing about it is sequencing
+src/output/sha256.h           # header-only, seals .sfxb the way it seals .mstk
+src/output/wav_writer.h       # header-only
+src/output/fit.h              # header-only: the FFT, the multi-resolution loss, Param/denorm/
+                              # build_json/prepare. src/fit/fit.h reuses all of it and replaces
+                              # only the Renderer. It declares msynth::fit::Renderer, which holds
+                              # a SynthEngine -- we never ODR-use it, which is why this links
+                              # without synth_engine.cpp. If midisynth moves any of it out of
+                              # line, check 3 below catches it.
+src/synth/voice.h
+src/synth/patch_def.h
+src/synth/patch_bank.h
+src/synth/channel_state.h
+src/synth/oscillator.h
+src/synth/envelope.h
+src/synth/filter.h
+src/synth/lfo.h
+src/synth/mod_matrix.h
+src/synth/limiter.h
+src/synth/fixmath.h
+src/synth/config.h
+src/synth/tables.h
+src/synth/wavetables.h
+src/synth/wavetable_gen.h
+src/synth/wavetable_cache.h
+src/synth/json_min.h
+src/synth/patch_loader.h
+src/synth/song_config.h
+src/synth/master_chain.h
+src/synth/effects/reverb.h
+src/synth/effects/chorus.h    # header-only: the chorus/ensemble send. What turns one
+                              # synthesized voice into several -- a choir, a beating machine.
+src/synth/effects/delay_fx.h  # header-only: the delay/echo send
+src/synth/effects/delay_line.h # header-only: the ring buffer chorus and delay share
+
+# ---------------------------------------------------------------------------
+# This project's OWN sources, per build target.
+#
+# The sections above track midisynth's DSP, which is borrowed. These track
+# ours, which is written here -- and they exist because check 4 only ever
+# looked at the $SYNTH_DIR paths, so nothing proved CMakeLists.txt and
+# build_wasm.sh agreed about the files this project itself compiles. With three
+# targets instead of two that gap widens rather than staying still.
+#
+# The invariant that carries the most weight is check 6:
+#
+#     OWN_WASM_TOOL \ OWN_WASM_ENGINE == exactly { src/fit/fit.cpp,
+#                                                  src/bindings/embind_fit.cpp }
+#
+# run_goldens.sh renders every golden case through the native binary, through
+# dsound.mjs and through dsound-tool.mjs and requires all three to hash the
+# same. That is only evidence about the fitter if the two modules differ by the
+# fitter ALONE. Let anything else drift in and the leg keeps passing while
+# proving something much weaker than it claims: not "the same engine plus a
+# fitter", but "two different programs that happen to agree".
+# ---------------------------------------------------------------------------
+
+OWN_NATIVE
+src/sfx/sfx_json.cpp
+src/sfx/bank.cpp
+src/sfx/voice_alloc.cpp
+src/sfx/instance.cpp
+src/sfx/pcm_cache.cpp
+src/sfx/spatial.cpp
+src/sfx/sfx_engine.cpp
+src/sfx/script.cpp
+src/bindings/c_api.cpp        # the C embedding surface; native only
+src/fit/fit.cpp
+
+OWN_WASM_ENGINE
+src/sfx/sfx_json.cpp
+src/sfx/bank.cpp
+src/sfx/voice_alloc.cpp
+src/sfx/instance.cpp
+src/sfx/pcm_cache.cpp
+src/sfx/spatial.cpp
+src/sfx/sfx_engine.cpp
+src/sfx/script.cpp
+src/bindings/embind_api.cpp   # the JS surface; wasm only
+
+OWN_WASM_TOOL
+src/sfx/sfx_json.cpp
+src/sfx/bank.cpp
+src/sfx/voice_alloc.cpp
+src/sfx/instance.cpp
+src/sfx/pcm_cache.cpp
+src/sfx/spatial.cpp
+src/sfx/sfx_engine.cpp
+src/sfx/script.cpp
+src/bindings/embind_api.cpp
+src/fit/fit.cpp
+src/bindings/embind_fit.cpp
