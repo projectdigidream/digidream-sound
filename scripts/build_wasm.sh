@@ -34,7 +34,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
 SYNTH_DIR="${DSND_SYNTH_DIR:-../midisynth/src}"
-FIXED_DIR="${DSND_FIXED_DIR:-../core/include}"
+FIXED_DIR="${DSND_FIXED_DIR:-../engine/core/include}"
 [ -d src/vendor/synth ] && { SYNTH_DIR=src/vendor; FIXED_DIR=src/vendor/include; }
 
 EMXX="${EMXX:-}"

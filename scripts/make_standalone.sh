@@ -14,7 +14,7 @@
 # lives (CMakeLists.txt and scripts/build_wasm.sh both read it):
 #
 #   ../midisynth/src            -> src/vendor            the borrowed DSP
-#   ../core/include/dnp/math    -> src/vendor/include    fixed.hpp
+#   ../engine/core/include/dnp/math -> src/vendor/include  fixed.hpp
 #
 # And one thing is deliberately left out: content/game/. The audio there is as
 # original as anything else in this project, but its ROLE NAMES reference
@@ -27,7 +27,7 @@ cd "$ROOT"
 
 OUT="${1:-build/standalone}"
 SYNTH="${DSND_SYNTH_DIR:-../midisynth/src}"
-FIXED="${DSND_FIXED_DIR:-../core/include}"
+FIXED="${DSND_FIXED_DIR:-../engine/core/include}"
 
 if [ -d src/vendor/synth ]; then
   echo "make_standalone: this tree is already standalone" >&2
@@ -98,7 +98,7 @@ in both projects" a fact rather than a hope. `include/dnp/math/fixed.hpp` is
 the fixed-point type aliases and shift helpers the whole engine is built on.
 
 In the development tree these are read from `../midisynth/src` and
-`../core/include` through `DSND_SYNTH_DIR` / `DSND_FIXED_DIR`. Here they are
+`../engine/core/include` through `DSND_SYNTH_DIR` / `DSND_FIXED_DIR`. Here they are
 copies, and `scripts/check_dsp_sources.sh` becomes a no-op: there is no longer
 a sibling to drift from.
 MD

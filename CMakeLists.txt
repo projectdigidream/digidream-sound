@@ -7,7 +7,7 @@ project(DigidreamSound CXX)
 # rather than forked (see dsp_manifest.txt). DSND_SYNTH_DIR is the one place
 # that path lives, so the same tree builds in-repo and standalone:
 #
-#   in-repo      ../midisynth/src          (and ../core/include for fixed.hpp)
+#   in-repo      ../midisynth/src          (and ../engine/core/include for fixed.hpp)
 #   standalone    src/vendor               (assembled by scripts/make_standalone.sh)
 #
 # The compile flags below are copied verbatim from midisynth's, and that is
@@ -28,7 +28,7 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/vendor/synth/config.h")
   set(DSND_FIXED_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src/vendor/include" CACHE PATH "dnp/math/fixed.hpp root")
 else()
   set(DSND_SYNTH_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../midisynth/src" CACHE PATH "midisynth src root")
-  set(DSND_FIXED_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../core/include" CACHE PATH "dnp/math/fixed.hpp root")
+  set(DSND_FIXED_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../engine/core/include" CACHE PATH "dnp/math/fixed.hpp root")
 endif()
 
 if(NOT EXISTS "${DSND_SYNTH_DIR}/synth/config.h")
