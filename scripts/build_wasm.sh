@@ -44,7 +44,7 @@ if [ -z "$EMXX" ]; then
   done
 fi
 if [ -z "$EMXX" ]; then
-  echo "em++ not found. Run ../scripts/setup_emsdk.sh, or set EMXX." >&2
+  echo "em++ not found. Run ../engine/scripts/setup_emsdk.sh (it installs ../emsdk), or set EMXX." >&2
   exit 1
 fi
 
