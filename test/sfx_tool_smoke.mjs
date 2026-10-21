@@ -56,7 +56,7 @@ try {
 const browser = await puppeteer.launch({
   executablePath: CHROME,
   headless: 'new',
-  args: ['--no-sandbox', '--autoplay-policy=no-user-gesture-required'],
+  args: ['--no-sandbox', '--autoplay-policy=no-user-gesture-required', '--mute-audio'],
 })
 const page = await browser.newPage()
 
@@ -386,6 +386,60 @@ try {
   })
   check(onTop, '“In the game” opens as a sheet ABOVE its dimmer, so it can be touched')
   await ev(() => globalThis.__sfx.openInGame(false))
+
+  // ---- autosave: the working copy outlives a reload ----
+  await ev(() => globalThis.__sfx.store.mutate('t', (d) => { d.sounds[0].gainDb = -7.5 }))
+  await settle(1600)
+  const keptCopy = await ev(async () => {
+    const { writeProj } = await import('./sfx/proj.js')
+    const k = JSON.parse(localStorage.getItem('dsfx.autosave') ?? 'null')
+    return { same: k?.text === writeProj(globalThis.__sfx.store.doc), dirty: k?.dirty, text: k?.text }
+  })
+  check(keptCopy.same && keptCopy.dirty === true, 'an edit is kept in the app’s storage a moment later, as unsaved')
+  await page.reload({ waitUntil: 'domcontentloaded' })
+  await page.click('#start-btn')
+  await page.waitForFunction(() => globalThis.__sfx && !document.getElementById('overlay'), { timeout: 30000 })
+  await settle(800)
+  const back = await ev(async () => {
+    const { writeProj } = await import('./sfx/proj.js')
+    return { text: writeProj(globalThis.__sfx.store.doc), dirty: globalThis.__sfx.store.dirty, dot: document.getElementById('dirty').classList.contains('on') }
+  })
+  check(back.text === keptCopy.text && back.dirty && back.dot, 'a reload reopens the bank as it was, still marked unsaved')
+
+  // ---- autosave: a bank with a file is written back to it ----
+  // A fake desktop host (what electron/preload.js provides), there before the
+  // page loads, with a file the app was "launched with".
+  const host = await browser.newPage()
+  host.on('pageerror', (e) => pageErrors.push(e.message))
+  await host.evaluateOnNewDocument((bank) => {
+    globalThis.__saves = []
+    let opened = null
+    globalThis.digidream = {
+      isDesktop: true,
+      open: async () => [],
+      save: async (name, data, opts = {}) => { globalThis.__saves.push({ name, toPath: opts.toPath ?? null }); return { name, path: opts.toPath ?? '/picked/' + name } },
+      saveMany: async () => null,
+      confirm: async () => true,
+      ready: async () => ({ data: new TextEncoder().encode(bank), path: '/fake/bank.sfxproj' }),
+      setDocument () {},
+      onMenu () {},
+      onOpenPath (fn) { opened = fn; setTimeout(() => opened(), 0) },
+    }
+  }, JSON.stringify({ version: 1, name: 'fake', buses: [{ name: 'b', spatial: false }], sounds: [{ name: 'a.b', variants: [{ patch: { oneShot: true, layers: [{ osc: 'noise', ampEnv: { attack: 0, decay: 60, sustain: 0, release: 0 } }] } }] }] }))
+  await host.goto(BASE, { waitUntil: 'domcontentloaded' })
+  await host.waitForFunction(() => globalThis.__sfx?.store.path === '/fake/bank.sfxproj', { timeout: 30000 })
+  await host.evaluate(() => globalThis.__sfx.store.mutate('t', (d) => { d.sounds[0].gainDb = -3 }))
+  await new Promise((r) => setTimeout(r, 1600))
+  const wrote = await host.evaluate(() => ({ saves: globalThis.__saves.slice(), dirty: globalThis.__sfx.store.dirty }))
+  check(wrote.saves.length === 1 && wrote.saves[0].toPath === '/fake/bank.sfxproj' && !wrote.dirty,
+    `an edit is written back to its file a moment later, with no dialog (${wrote.saves.length} save)`)
+  await host.evaluate(() => document.getElementById('auto-file').click())
+  await host.evaluate(() => globalThis.__sfx.store.mutate('t', (d) => { d.sounds[0].gainDb = -4 }))
+  await new Promise((r) => setTimeout(r, 1600))
+  const off = await host.evaluate(() => ({ n: globalThis.__saves.length, dirty: globalThis.__sfx.store.dirty }))
+  check(off.n === 1 && off.dirty, 'with “Save to the file automatically” off, the file is left alone')
+  await host.evaluate(() => document.getElementById('auto-file').click())   // back on for the next run
+  await host.close()
 
   check(pageErrors.length === 0, `no page errors${pageErrors.length ? ': ' + pageErrors[0] : ''}`)
   // A console error and a failed response are usually the same event seen

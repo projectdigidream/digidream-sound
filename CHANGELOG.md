@@ -5,6 +5,13 @@ land: anything not released yet is under **Unreleased**.
 
 ## Unreleased
 
+### Added
+
+- Autosave. A second after you stop editing, the bank is kept in the app, so a
+  reload or a crash reopens it as it was; in the desktop and Android apps a
+  bank that came from a file is written back to it too (⋯ → Save to the file
+  automatically). The "leave the page?" question is gone.
+
 ## 0.2.0 -- 2026-10-14
 
 The first public release. Rebuilt on 2026-10-15 (same version) with the

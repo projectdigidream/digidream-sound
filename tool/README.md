@@ -364,9 +364,24 @@ Settings for the whole bank.
 | **Library ⋯ → Even out the levels** | sets every sound's volume so its loudest moment lands on one target |
 | **Library ⋯ → Sort A → Z** | reorders the sounds by name |
 
-Nothing is saved automatically: the `.sfxproj` is your document. The editor
-remembers only where you were — the view, the selected sound, the search, which
-sections were folded. A reload with unsaved changes asks first.
+**Autosave.** A second after you stop editing, your work is kept in the app,
+whatever you are running it in: close it, reload, or lose power, and it opens
+again where you were, unsaved changes included.
+
+- **Desktop and Android apps:** a bank you opened or saved is a file, and it is
+  written back to that file automatically too. To experiment without touching
+  the file, turn off **⋯ → Save to the file automatically**; Save writes it when
+  you choose.
+- **In a browser:** a browser can only download files, so it keeps your work in
+  its own storage instead, and **Save** downloads a `.sfxproj`. The dot beside
+  the bank's name means "not in a file yet". Clearing the browser's site data
+  clears that copy, so save the ones you want to keep.
+- **Inside the studio:** the studio saves the pack when you go back to it, and
+  keeps a draft meanwhile.
+
+Only one bank is kept this way: opening another replaces it (the editor asks
+first if the current one is not in a file). The editor also remembers where you
+were — the view, the selected sound, the search, which sections were folded.
 
 ---
 

@@ -334,10 +334,18 @@ Save and Open are in the top bar; the rest are under **⋯**.
 | Export this sound as WAV | a 48 kHz stereo `.wav` of the selected take |
 | Even out the levels | (library ⋯) sets every sound's volume so its loudest moment lands on one target |
 
-Nothing is autosaved. The `.sfxproj` is the document, and a browser-side shadow
-copy is a second source of truth that disagrees with disk at the worst possible
-moment. What is remembered between sessions is where you were — tab, selection,
-search, which cards are folded, whether it plays on change.
+**Autosave**, 1 s after edits stop and at most 10 s apart. The working copy
+goes into the app's own storage on every platform, so a reload or a crash
+reopens the bank as it was, unsaved changes included; nothing asks "leave the
+page?". A bank that came from a file — the desktop and Android apps know its
+path — is also written back to that file (⋯ → *Save to the file
+automatically*, on by default). A browser has no path, only downloads, so
+there Save is still how a file is made, and the dot beside the bank's name
+means "not in a file yet", not "at risk". If a file write fails (moved,
+permission lapsed), autosave stops writing files until the next Save and says
+so. Inside the studio none of this runs: the studio keeps drafts and saves into
+the module on Back. Beside the working copy, what is remembered is where you
+were — view, selection, search, which cards are folded.
 
 ## Mobile
 

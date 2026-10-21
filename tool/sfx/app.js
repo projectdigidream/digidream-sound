@@ -132,11 +132,11 @@ function docChanged (e) {
 }
 ctx.store.addEventListener('change', docChanged)
 
-async function openText (text, path) {
+async function openText (text, path, { dirty = false } = {}) {
   let parsed
   try { parsed = readProj(text) } catch (err) { ctx.log(`cannot open: ${err.message}`, 'err'); return false }
   for (const r of parsed.repairs) ctx.log(`repaired: ${r}`, 'warn')
-  ctx.store.replace(parsed.doc, path)
+  ctx.store.replace(parsed.doc, path, { dirty })
   const keep = ctx.ui.load().sound
   ctx.sel = { sound: parsed.doc.sounds.length ? (keep >= 0 && keep < parsed.doc.sounds.length ? keep : 0) : -1, variant: 0 }
   // The worker keeps a whole-bank copy for baking; opening is the moment to
@@ -199,6 +199,79 @@ ctx.deleteSound = (i) => {
   ctx.select(Math.min(i, ctx.store.doc.sounds.length - 1), 0)
   ctx.log(`deleted ${s.name} — undo brings it back`, 'ok')
 }
+
+// ---------------------------------------------------------------------------
+// Autosave.
+//
+// Two things, 1 s after edits stop (and at most 10 s apart while they don't):
+//
+//   * The WORKING COPY goes into this app's own storage, every platform. A
+//     reload, a crash or a closed tab reopens the bank as it was, unsaved
+//     changes included -- so nothing asks "leave the page?" any more.
+//   * A bank that came from a FILE (the desktop and Android apps know its
+//     path) is written back to that file, unless ⋯ -> Save automatically is
+//     off. A browser has no path, only downloads, so there the working copy
+//     is the autosave and Save is still how a file is made.
+//
+// Inside the studio neither happens: the studio keeps drafts and saves into
+// the module on Back (studio/plugins/sfx/suite-shim.js), and a save from here
+// would mark the bank saved under it.
+// ---------------------------------------------------------------------------
+const AUTO_KEY = 'dsfx.autosave'
+const inSuite = new URLSearchParams(location.search).get('host') === 'suite'
+const autoToFile = () => ctx.ui.load().autoFile !== false
+let autoTimer = null
+let autoSince = 0
+let autoWriting = false
+
+function keepWorkingCopy (text = writeProj(ctx.store.doc)) {
+  // ponytail: one slot per browser profile; two tabs of the tool keep whichever saved last.
+  try {
+    localStorage.setItem(AUTO_KEY, JSON.stringify({ text, path: ctx.store.path, dirty: ctx.store.dirty }))
+  } catch { /* storage full or blocked: the file save below still runs */ }
+}
+
+function scheduleAutosave () {
+  if (inSuite) return
+  const now = Date.now()
+  if (!autoTimer) autoSince = now
+  clearTimeout(autoTimer)
+  autoTimer = setTimeout(autosave, Math.max(0, Math.min(1000, autoSince + 10000 - now)))
+}
+
+async function autosave () {
+  autoTimer = null
+  const text = writeProj(ctx.store.doc)
+  if (ctx.store.dirty && ctx.store.path && autoToFile() && !autoWriting) {
+    autoWriting = true
+    try {
+      const r = await saveBytes(`${ctx.store.doc.name || 'bank'}.sfxproj`, text, 'application/json', { toPath: ctx.store.path })
+      // Only what was written counts as saved: an edit made while the file
+      // was being written is still unsaved, and the next autosave takes it.
+      if (r && writeProj(ctx.store.doc) === text) ctx.store.markSaved(r.path ?? ctx.store.path)
+      if (!r) throw new Error('not written')
+    } catch (e) {
+      // A file that moved or lost its permission: stop trying until the
+      // next Save says where it lives now.
+      ctx.store.path = null
+      ctx.log(`could not save to the file automatically (${e.message}); it is kept here, use Save`, 'warn')
+    } finally { autoWriting = false }
+  }
+  keepWorkingCopy()
+}
+
+ctx.store.addEventListener('change', scheduleAutosave)
+// Leaving: the working copy as it is this instant, without waiting for the timer.
+globalThis.addEventListener('pagehide', () => { if (!inSuite) keepWorkingCopy() })
+
+$('auto-file').onclick = () => {
+  ctx.ui.save({ autoFile: !autoToFile() })
+  paintAutoFile()
+  if (autoToFile()) scheduleAutosave()
+}
+function paintAutoFile () { $('auto-file').querySelector('.k').textContent = autoToFile() ? 'on' : 'off' }
+paintAutoFile()
+if (inSuite) $('auto-file').style.display = 'none'
 
 // ---------------------------------------------------------------------------
 // File actions.
@@ -321,8 +394,10 @@ document.addEventListener('keydown', (e) => {
   if (e.key === '?') openHelp()
 })
 
+// Only the studio still needs the "leave the page?" question: everywhere else
+// the working copy is kept on the way out (Autosave, above).
 globalThis.addEventListener('beforeunload', (e) => {
-  if (ctx.store.dirty) { e.preventDefault(); e.returnValue = '' }
+  if (inSuite && ctx.store.dirty) { e.preventDefault(); e.returnValue = '' }
 })
 
 // A .sfxproj dropped anywhere opens it. (A WAV goes to the match sheet, which
@@ -402,7 +477,10 @@ async function boot () {
     $('lib-level').onclick = levelAll
 
     $('overlay').remove()
-    await runAction('load-starter')
+    // Where you were: the working copy autosave kept, else the example bank.
+    let kept = null
+    try { kept = inSuite ? null : JSON.parse(localStorage.getItem(AUTO_KEY) ?? 'null') } catch { /* unreadable: start fresh */ }
+    if (!kept || !(await openText(kept.text, kept.path ?? null, { dirty: !!kept.dirty }))) await runAction('load-starter')
     if (ui.view === 'mix') showView('mix')
 
     if (isDesktop) {

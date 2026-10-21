@@ -487,12 +487,14 @@ export class ProjStore extends EventTarget {
   }
 
   /** A different document entirely: opening a file. Clears the history. */
-  replace(doc, path = null) {
+  replace(doc, path = null, { dirty = false } = {}) {
     this._doc = doc;
     this._undo.length = 0;
     this._redo.length = 0;
     this._last = { label: null, at: 0 };
-    this._dirty = false;
+    // `dirty` for a working copy reopened after a reload: kept, but not yet
+    // in the file it came from.
+    this._dirty = dirty;
     this.path = path;
     this._emit('open', true);
   }
