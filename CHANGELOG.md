@@ -5,6 +5,10 @@ land: anything not released yet is under **Unreleased**.
 
 ## Unreleased
 
+## 0.2.0.1 -- 2026-10-22
+
+A dev release.
+
 ### Changed
 
 - Flat line icons instead of colour emoji: the kinds of sound in Start from,
