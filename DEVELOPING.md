@@ -148,6 +148,29 @@ It ships three ways from one staged payload, so all three run byte-identical
 code: `package_web.sh` (a static directory), `package_electron.sh` (macOS,
 Windows, Linux) and `package_android.sh` (an APK, from the Android SDK alone).
 
+**Icons** are flat line drawings, never colour emoji (the toolkit's rule).
+`tool/sfx/icons.js` holds uikit's base-skin drawings (catalog groups `sfx` and
+`status`) with the stroke turned into `currentColor`. After uikit redraws
+them, regenerate the file from a checkout that has `uikit/` beside `sound/`:
+
+```sh
+python3 - <<'PY'
+import pathlib
+src = pathlib.Path('../uikit/skins/claude/icons')
+ids = ['sfx/' + n for n in 'gunshot explosion laser hit bell pickup jingle door machine engine monster voice whoosh randomize vary match unsure'.split()] + ['status/error', 'status/warning']
+f = pathlib.Path('tool/sfx/icons.js'); t = f.read_text()
+head, tail = t[:t.index('const SVG = {')], t[t.index('\n}\n'):]
+rows = []
+for i in ids:
+    svg = (src / f'{i}.svg').read_text().strip().replace(' xmlns="http://www.w3.org/2000/svg"', '').replace('<!-- make_icons -->', '')
+    svg = svg.replace('"#000"', '"currentColor"').replace('<svg ', '<svg aria-hidden="true" ')
+    rows.append(f"  '{i.split('/')[1]}': '{svg}',")
+f.write_text(head + 'const SVG = {\n' + '\n'.join(rows) + tail)
+PY
+```
+
+The browser smoke test fails if a colour emoji appears anywhere on the page.
+
 ## Standalone
 
 ```sh

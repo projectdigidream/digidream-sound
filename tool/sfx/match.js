@@ -22,6 +22,7 @@ import { el, choice } from './controls.js'
 import { drawEnvelope } from './waveform.js'
 import { KINDS, archsOfKind, kindOfArch } from './recipes.js'
 import { parseNum } from './proj.js'
+import { icon } from './icons.js'
 
 const QUALITY = {
   quick: { label: 'Quick', restarts: 1, iters: 25 },
@@ -283,7 +284,7 @@ export function initMatch (ctx) {
       const inp = el('input', { type: 'file', accept: 'audio/*,.wav', style: 'display:none' })
       inp.onchange = () => { if (inp.files[0]) load(inp.files[0]) }
       const zone = el('div', { class: 'drop-zone', onclick: () => inp.click() },
-        el('div', { style: 'font-size:28px', text: '🎙' }),
+        el('div', { class: 'drop-ico' }, icon('match')),
         el('div', { text: target ? `${refName} — drop another to replace it` : 'Drop a WAV here, or click to choose one' }),
         el('div', { class: 'hint', text: 'Your own recording, or one you are allowed to use.' }))
       zone.ondragover = (e) => { e.preventDefault(); zone.classList.add('hover') }
@@ -315,9 +316,9 @@ export function initMatch (ctx) {
       sheet.append(el('p', { class: 'note', text: 'What kind of sound is it? Picking one makes the match faster and better.' }))
       const kinds = el('div', { class: 'kinds' },
         el('button', { class: 'kind' + (kindId === null ? ' on' : ''), onclick: () => { kindId = null; paint() } },
-          el('span', { class: 'ico', text: '🤔' }), el('span', { class: 'kl', text: 'Not sure' })),
+          el('span', { class: 'ico' }, icon('unsure')), el('span', { class: 'kl', text: 'Not sure' })),
         KINDS.map((k) => el('button', { class: 'kind' + (kindId === k.id ? ' on' : ''), title: k.hint, onclick: () => { kindId = k.id; paint() } },
-          el('span', { class: 'ico', text: k.icon }), el('span', { class: 'kl', text: k.label }))))
+          el('span', { class: 'ico' }, icon(k.icon)), el('span', { class: 'kl', text: k.label }))))
       sheet.append(kinds)
       sheet.append(el('div', { class: 'gen-row' }, el('span', { class: 'hint', text: 'Effort' }),
         choice(Object.entries(QUALITY).map(([k, q]) => [k, q.label]), quality, (x) => { quality = x; paint() }),

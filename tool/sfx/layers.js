@@ -116,7 +116,7 @@ export function renderFlow (s, v, onPick) {
     rings ? el('span', { class: 'flow-arrow', text: '→' }) : null,
     el('div', { class: 'flow-node', text: `volume ${(s.gainDb ?? 0) > 0 ? '+' : ''}${(s.gainDb ?? 0)} dB` }),
     el('span', { class: 'flow-arrow', text: '→' }),
-    el('div', { class: 'flow-node out', text: '🔊 game' }))
+    el('div', { class: 'flow-node out', text: 'game' }))
 }
 
 // ---------------------------------------------------------------------------

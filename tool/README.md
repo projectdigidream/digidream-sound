@@ -159,19 +159,19 @@ Thirteen kinds of sound:
 
 | Kind | Good for | Recipes it draws from |
 |---|---|---|
-| 🔫 Gunshot | firearms: a crack, a body, a tail, a mechanical action | `gunshot`, `weapon` |
-| 💥 Explosion | blasts, rockets, barrels | `explosion`, `burst/*` |
-| ⚡ Laser / zap | energy weapons, magic, electricity | `energy` |
-| 👊 Hit / punch | impacts, footsteps, thuds | `impact/*` (9 noise × filter combinations) |
-| 🔔 Metal / bell | anything struck that rings | `modal/*` |
-| ✨ Pickup / blip | items, UI | `blip/*` |
-| 🎵 Jingle | a few notes in a row: power-ups, alerts | `sequence/*` |
-| 🚪 Door / mechanism | doors, switches, lifts | `mechanism` |
-| ⚙️ Machine | working, buzzing things | `machine` |
-| 🚗 Engine hum | held drones, motors, chainsaws | `motor` |
-| 👹 Monster | roars and growls | `roar/*`, `growl` |
-| 🗣️ Voice / grunt | vowel-like shouts, pain | `voice` |
-| 💨 Whoosh | swings, air, passing things | `whoosh` |
+| Gunshot | firearms: a crack, a body, a tail, a mechanical action | `gunshot`, `weapon` |
+| Explosion | blasts, rockets, barrels | `explosion`, `burst/*` |
+| Laser / zap | energy weapons, magic, electricity | `energy` |
+| Hit / punch | impacts, footsteps, thuds | `impact/*` (9 noise × filter combinations) |
+| Metal / bell | anything struck that rings | `modal/*` |
+| Pickup / blip | items, UI | `blip/*` |
+| Jingle | a few notes in a row: power-ups, alerts | `sequence/*` |
+| Door / mechanism | doors, switches, lifts | `mechanism` |
+| Machine | working, buzzing things | `machine` |
+| Engine hum | held drones, motors, chainsaws | `motor` |
+| Monster | roars and growls | `roar/*`, `growl` |
+| Voice / grunt | vowel-like shouts, pain | `voice` |
+| Whoosh | swings, air, passing things | `whoosh` |
 
 - **Pressing a kind** replaces the selected take with a new sound of that kind.
 - **Randomize** makes another of the same kind (staying with the recipe you

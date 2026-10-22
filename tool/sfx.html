@@ -178,7 +178,14 @@
   /* the kinds */
   .kinds { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; }
   .kind { display: flex; align-items: center; gap: 8px; padding: 6px 10px; min-height: 38px; border-radius: 10px; text-align: left; white-space: nowrap; overflow: hidden; }
-  .kind .ico { font-size: 17px; line-height: 1; }
+  .kind .ico { line-height: 0; color: var(--accent); }
+  /* Icons are inline line drawings in currentColor (sfx/icons.js), never emoji. */
+  .icon { display: inline-flex; width: 18px; height: 18px; flex: none; vertical-align: -4px; }
+  .icon svg { width: 100%; height: 100%; }
+  button > .icon:first-child { margin-right: 6px; }
+  .problem-ico { line-height: 0; }
+  .problem-ico.error { color: var(--bad); } .problem-ico.warning { color: var(--warn); }
+  .drop-ico { color: var(--dim); } .drop-ico .icon { width: 32px; height: 32px; }
   .kind .kl { font-weight: 600; font-size: 13px; }
   .kind.on { border-color: var(--accent); background: #5aa9ff1a; }
   .gen-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 12px; }

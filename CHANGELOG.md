@@ -5,6 +5,11 @@ land: anything not released yet is under **Unreleased**.
 
 ## Unreleased
 
+### Changed
+
+- Flat line icons instead of colour emoji: the kinds of sound in Start from,
+  Randomize, Vary, Match a recording, and the problem markers.
+
 ### Added
 
 - Autosave. A second after you stop editing, the bank is kept in the app, so a

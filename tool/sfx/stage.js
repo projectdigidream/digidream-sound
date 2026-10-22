@@ -24,6 +24,7 @@ import {
 } from './recipes.js'
 import { toList, inspect } from './validate.js'
 import { renderLayers, renderTiming, LAYER_COLORS, layerSummary } from './layers.js'
+import { icon } from './icons.js'
 
 const TARGET_PEAK = -6        // dBFS a generated sound is levelled to
 
@@ -219,7 +220,7 @@ export function initStage (ctx) {
     dom.problems.replaceChildren(...list.map((p) => {
       const fixes = p.fix?.fixes ?? []
       return el('div', { class: `problem ${p.severity}` },
-        el('span', { text: p.severity === 'error' ? '⛔' : '⚠️' }),
+        el('span', { class: `problem-ico ${p.severity}` }, icon(p.severity === 'error' ? 'error' : 'warning')),
         el('div', {},
           el('div', { text: plain(p.text) }),
           fixes.length ? el('div', { class: 'fixes' }, fixes.map((f) =>
@@ -461,12 +462,12 @@ export function initStage (ctx) {
     const curKind = curArch ? kindOfArch(curArch.name) : (s._fitted?.arch ? kindOfArch(s._fitted.arch) : null)
     const kinds = el('div', { class: 'kinds' }, KINDS.map((k) => el('button', {
       class: 'kind' + (curKind?.id === k.id ? ' on' : ''), title: k.hint, onclick: () => fromKind(k),
-    }, el('span', { class: 'ico', text: k.icon }), el('span', { class: 'kl', text: k.label }))))
+    }, el('span', { class: 'ico' }, icon(k.icon)), el('span', { class: 'kl', text: k.label }))))
     const gen = el('div', { class: 'gen-row' },
-      el('button', { class: 'primary', text: '🎲 Randomize', title: 'another sound of the same kind (R)', onclick: randomize }),
-      el('button', { text: '✨ Vary', title: 'the same sound, a little different (V)', disabled: !v._recipe, onclick: vary }),
+      el('button', { class: 'primary', title: 'another sound of the same kind (R)', onclick: randomize }, icon('randomize'), 'Randomize'),
+      el('button', { title: 'the same sound, a little different (V)', disabled: !v._recipe, onclick: vary }, icon('vary'), 'Vary'),
       el('span', { class: 'sp' }),
-      el('button', { text: '🎙 Match a recording…', title: 'make a recipe that sounds like a WAV you have', onclick: () => ctx.openMatch() }))
+      el('button', { title: 'make a recipe that sounds like a WAV you have', onclick: () => ctx.openMatch() }, icon('match'), 'Match a recording…'))
     const origin = curArch
       ? `made from the ${curKind?.label ?? curArch.name} recipe`
       : s._fitted ? `matched to ${s._fitted.ref}` : 'hand-made'

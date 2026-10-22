@@ -113,6 +113,16 @@ try {
   check(await ev(() => document.querySelectorAll('#lib-list .item').length) === 2, 'search filters by name and tag')
   await ev(() => { document.getElementById('lib-search').value = ''; document.getElementById('lib-search').dispatchEvent(new Event('input')) })
 
+  // ---- flat icons only (the toolkit's rule): no colour emoji anywhere on the page ----
+  const emoji = await ev(() => {
+    // Colour emoji only: plain glyphs such as ✕ › ▶ are text, and fine.
+    const re = /\p{Emoji_Presentation}|\u{FE0F}/u
+    const all = [document.body.innerText, ...[...document.querySelectorAll('[title]')].map((e) => e.title)]
+    return all.join('\n').split('\n').filter((t) => re.test(t)).slice(0, 3)
+  })
+  check(emoji.length === 0, `no colour emoji on the page${emoji.length ? ': ' + emoji.join(' | ') : ''}`)
+  check(await ev(() => document.querySelectorAll('.kind .icon svg').length) === 13, 'every kind of sound has a line icon')
+
   // ---- the stage and the transport ----
   await ev(() => document.querySelectorAll('#lib-list .item')[1].click())
   await page.waitForFunction(() => globalThis.__sfx.audition.ready && globalThis.__sfx.stage.report, { timeout: 15000 })
@@ -151,10 +161,12 @@ try {
   check(made.n === made.params, 'and records every knob of it')
   check(made.sliders >= made.params + 4, `every knob is a slider, plus the four general ones (${made.sliders})`)
   const lvl = await heard()
-  check(Math.abs(lvl + 6) < 0.3, `a generated sound is levelled to -6 dB (${lvl?.toFixed(1)})`)
+  // Random each run: a very quiet one stops at the +12 dB volume ceiling.
+  const maxed = await ev(() => globalThis.__sfx.store.doc.sounds[1].gainDb === 12)
+  check(Math.abs(lvl + 6) < 0.3 || (maxed && lvl < -6), `a generated sound is levelled to -6 dB (${lvl?.toFixed(1)}${maxed ? ', volume at its +12 dB ceiling' : ''})`)
 
   const u0 = await ev(() => globalThis.__sfx.store.doc.sounds[1].variants[0]._recipe.u.slice())
-  await clickText('.gen-row button', '✨ Vary')
+  await clickText('.gen-row button', 'Vary')
   await settle(800)
   const varied = await ev(() => globalThis.__sfx.store.doc.sounds[1].variants[0]._recipe)
   check(varied.arch === made.arch && varied.u.some((x, i) => x !== u0[i]), 'Vary keeps the recipe and moves its knobs')
