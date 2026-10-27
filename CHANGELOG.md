@@ -5,9 +5,9 @@ land: anything not released yet is under **Unreleased**.
 
 ## Unreleased
 
-## 0.2.0.1 -- 2026-10-22
+## 0.2.1 -- 2026-10-27
 
-A dev release.
+First out as the dev release 0.2.0.1.
 
 ### Changed
 
